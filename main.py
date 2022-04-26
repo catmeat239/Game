@@ -1,11 +1,11 @@
-from field import Field, SquareField
+from field import Field, SquareField, RombField
 from player import Player, HumanPlayer
 from tkinter import *
 
-k = 4
+k = 5
 a = 40  # side of a Sell
-n = k * a * 2
-field = SquareField(k)
+n = (k + 2) * a
+field = RombField(k)
 
 window = Tk()
 c = Canvas(window, width=n, height=n, bg='white')
@@ -19,7 +19,8 @@ def click(event):
     x = event.x
     y = event.y
 
-    if (x > n // 4 and y > n // 4 and (min(x % a, a - x % a) < a // 2 or  min(y % a, a - y % a) < a // 2) ):
+
+    if ((min(x % a, a - x % a) < a // 2 or  min(y % a, a - y % a) < a // 2) ):
 
         vertical = min(x % a, a - x % a) < min( y % a, a - y % a)
         if(vertical):
@@ -28,8 +29,8 @@ def click(event):
         else:
             j = (y + a // 2) // a
             i = x // a
-        i -= k // 2
-        j -= k // 2
+        i -= 1
+        j -= 1
 
         if(   j < field.arr.__len__() and i < field.arr.__len__() and ((vertical and field.arr[i][j].left == False) or (vertical != True and field.arr[i][j].up != True) )):
             if not playerA.hasMoved:
@@ -49,7 +50,7 @@ def gameProccess(playerA, playerB, field):
         else:
             playerA.move(field)
 
-        if  isinstance(playerB,HumanPlayer):
+        if isinstance(playerB, HumanPlayer):
             while (not playerB.hasMoved):
                 window.update()
                 if (field.isFull()):
