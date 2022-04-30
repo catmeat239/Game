@@ -1,8 +1,8 @@
 from field import Field, SquareField, RombField
-from player import Player, HumanPlayer
+from player import Player, HumanPlayer, CompPlayer
 from tkinter import *
 
-k = 5
+k = 9
 a = 40  # side of a Sell
 n = (k + 2) * a
 field = RombField(k)
@@ -13,7 +13,9 @@ c.pack()
 field.draw(window, c)
 
 playerA = HumanPlayer(1)
-playerB = HumanPlayer(2)
+playerB = CompPlayer(2)
+
+
 
 def click(event):
     x = event.x
@@ -32,12 +34,12 @@ def click(event):
         i -= 1
         j -= 1
 
-        if(   j < field.arr.__len__() and i < field.arr.__len__() and ((vertical and field.arr[i][j].left == False) or (vertical != True and field.arr[i][j].up != True) )):
+        if(playerA.canMove(field, i, j, vertical)):
             if not playerA.hasMoved:
                 playerA.move(field, i, j, vertical)
             elif not playerB.hasMoved:
                 playerB.move(field, i, j, vertical)
-            field.draw(window, c)
+
 
 
 def gameProccess(playerA, playerB, field):
@@ -48,7 +50,12 @@ def gameProccess(playerA, playerB, field):
                 if (field.isFull()):
                     break
         else:
-            playerA.move(field)
+            playerA.play(field)
+            window.update()
+            if (field.isFull()):
+                break
+
+        field.draw(window, c)
 
         if isinstance(playerB, HumanPlayer):
             while (not playerB.hasMoved):
@@ -56,7 +63,13 @@ def gameProccess(playerA, playerB, field):
                 if (field.isFull()):
                     break
         else:
-            playerB.move(field)
+            playerB.play(field)
+            window.update()
+            if (field.isFull()):
+                break
+
+        field.draw(window, c)
+
         playerA.hasMoved = False
         playerB.hasMoved = False
     scoreA, scoreB = field.calulateScore()

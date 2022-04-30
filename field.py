@@ -14,12 +14,13 @@ class Sell:
     -1 if not a part of field
     """
 
-    def __init__(self, value: int = -1, left=False, right=False, up=False, down=False):
+    def __init__(self, value: int = -1, left=False, right=False, up=False, down=False, cnt=0):
         self.left = left
         self.right = right
         self.up = up
         self.down = down
         self.value = value
+        self.cnt = cnt
 
 
 class Field:
@@ -28,6 +29,7 @@ class Field:
 
     def __init__(self, n: int = 0):
         self.arr = [[Sell() for j in range(n)] for i in range(n)]
+
 
     def draw(self, window: Tk, c):
         window.title("Labirint")
@@ -95,6 +97,17 @@ class SquareField(Field):
             self.arr[n - 1][i].right = True
             for j in range(n):
                 self.arr[i][j].value = 0
+        for i in range(n):
+            for j in range(n):
+                self.arr[i][j].cnt = 0
+                if (self.arr[i][j].left):
+                    self.arr[i][j].cnt += 1
+                if (self.arr[i][j].right):
+                    self.arr[i][j].cnt += 1
+                if (self.arr[i][j].up):
+                    self.arr[i][j].cnt += 1
+                if (self.arr[i][j].down):
+                    self.arr[i][j].cnt += 1
         self.emptySellCounter = n * n
 
 
@@ -137,4 +150,14 @@ class RombField(Field):
         self.arr[0][(n - 1) // 2].value = self.arr[n - 1][(n - 1) // 2].value = 1
         self.arr[(n - 1) // 2][0].value = self.arr[(n - 1) // 2][n - 1].value = 2
         self.emptySellCounter = n * n - (n - 1) // 2 * ((n - 1) // 2 + 1) * 2 - 4
-
+        for i in range(n):
+            for j in range(n):
+                self.arr[i][j].cnt = 0
+                if (self.arr[i][j].left):
+                    self.arr[i][j].cnt += 1
+                if (self.arr[i][j].right):
+                    self.arr[i][j].cnt += 1
+                if (self.arr[i][j].up):
+                    self.arr[i][j].cnt += 1
+                if (self.arr[i][j].down):
+                    self.arr[i][j].cnt += 1
