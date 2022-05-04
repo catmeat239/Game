@@ -97,8 +97,6 @@ rulesButton.pack()
 
 fieldType = IntVar()
 
-customFieldButton = Radiobutton(text="custom", value=0, variable=fieldType, padx=15, pady=10)
-customFieldButton.pack()
 
 squareFieldButton = Radiobutton(text="square", value=1, variable=fieldType, padx=15, pady=10)
 squareFieldButton.pack()
@@ -112,7 +110,11 @@ rombFieldButton.pack()
 onMenu = 1
 while(onMenu != 0):
     window.update()
-
+squareFieldButton.destroy()
+rombFieldButton.destroy()
+rulesButton.destroy()
+playVSComputerButton.destroy()
+playVSHumanButton.destroy()
 
 playerA = HumanPlayer(1)
 if(playVSComp):
@@ -120,7 +122,7 @@ if(playVSComp):
 else:
     playerB = HumanPlayer(2)
 
-k = 9
+k = 5
 a = 40  # side of a Sell
 n = (k + 2) * a
 window.option_clear()

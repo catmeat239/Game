@@ -49,6 +49,7 @@ class HumanPlayer(Player):
     def __init__(self, sign):
         super().__init__(sign)
 
+
 def countOfSellsThatWeCanTake(field : Field, i, j):
     returnValue = 0
     if ( field[i][j].cnt == 3):
@@ -150,7 +151,8 @@ class CompPlayer(Player):
             if(canTakeSellCounter):
                 for i in range(n):
                     for j in range(n):
-                        if(countOfSellsThatWeCanTake(field, i, j) > )
+                        print()
+                        #if(countOfSellsThatWeCanTake(field, i, j) > )
 
 
 
