@@ -1,4 +1,94 @@
 from field import Field, SquareField
+
+def findStickThatWeCanTake(field, i, j):
+    if (not field.arr[i][j].left):
+        x = i
+        y = j
+        vertical = True
+    elif (not field.arr[i][j].right):
+        x = i + 1
+        y = j
+        vertical = True
+    elif (not field.arr[i][j].up):
+        x = i
+        y = j
+        vertical = False
+    elif (not field.arr[i][j].down):
+        x = i
+        y = j + 1
+        vertical = False
+    return x, y,vertical
+
+def countOfSellsThatWeCanTake(field : Field, i, j):
+    returnValue = 0
+    if (field.arr[i][j].cnt == 3):
+        if (field.arr[i][j].cnt == 3):
+            if (not field.arr[i][j].left):
+                field.arr[i - 1][j].right = True
+                field.arr[i - 1][j].cnt += 1
+                returnValue = countOfSellsThatWeCanTake(field, i - 1, j) + 122
+                field.arr[i - 1][j].right = False
+                field.arr[i - 1][j].cnt -= 1
+
+            elif (not field.arr[i][j].right):
+                field.arr[i + 1][j].left = True
+                field.arr[i + 1][j].cnt += 1
+                returnValue = countOfSellsThatWeCanTake(field, i + 1, j) + 1
+                field.arr[i + 1][j].left = False
+                field.arr[i + 1][j].cnt -= 1
+
+            elif (not field.arr[i][j].up):
+                field.arr[i][j - 1].down = True
+                field.arr[i][j - 1].cnt += 1
+                returnValue = countOfSellsThatWeCanTake(field, i, j - 1) + 1
+                field.arr[i][j - 1].down = False
+                field.arr[i][j - 1].cnt -= 1
+            elif (not field.arr[i][j - 1].down):
+                field.arr[i][j + 1].up = True
+                field.arr[i][j + 1].cnt += 1
+                returnValue = countOfSellsThatWeCanTake(field, i, j + 1) + 1
+                field.arr[i][j + 1].up = False
+                field.arr[i][j + 1].cnt -= 1
+    return returnValue
+def giveMininum(field):
+    minSellsWeCanGave = field.emptySellCounter
+    n = len(field.arr)
+    for i in range(n):
+        for j in range(n):
+            if (field.arr[i][j].value == 0):
+                if (not field.arr[i][j].left):
+                    field.arr[i][j].left = True
+                    bf = countOfSellsThatWeCanTake(field, i, j)
+                    if (bf < minSellsWeCanGave):
+                        minSellsWeCanGave = bf
+                        x, y, vertical = i, j, True
+                    field.arr[i][j].left = False
+
+                if (not field.arr[i][j].right):
+                    field.arr[i][j].right = True
+                    bf = countOfSellsThatWeCanTake(field, i, j)
+                    if (bf < minSellsWeCanGave):
+                        minSellsWeCanGave = bf
+                        x, y, vertical = i + 1, j, True
+                    field.arr[i][j].right = False
+
+                if (not field.arr[i][j].up):
+                    field.arr[i][j].up = True
+                    bf = countOfSellsThatWeCanTake(field, i, j)
+                    if (bf < minSellsWeCanGave):
+                        minSellsWeCanGave = bf
+                        x, y, vertical = i, j, False
+                    field.arr[i][j].up = False
+
+                if (not field.arr[i][j].down):
+                    field.arr[i][j].down = True
+                    bf = countOfSellsThatWeCanTake(field, i, j)
+                    if (bf < minSellsWeCanGave):
+                        minSellsWeCanGave = bf
+                        x, y, vertical = i, j + 1, False
+                    field.arr[i][j].down = False
+    return x, y, vertical
+
 class Player:
 
     def __init__(self, sign):
@@ -50,37 +140,6 @@ class HumanPlayer(Player):
         super().__init__(sign)
 
 
-def countOfSellsThatWeCanTake(field : Field, i, j):
-    returnValue = 0
-    if ( field[i][j].cnt == 3):
-        if (field.arr[i][j].cnt == 3):
-            if (not field.arr[i][j].left):
-                field.arr[i - 1][j].right = True
-                field.arr[i - 1][j].cnt += 1
-                returnValue = countOfSellsThatWeCanTake(field, i - 1, j) + 1
-                field.arr[i - 1][j].right = False
-                field.arr[i - 1][j].cnt -= 1
-
-            elif (not field.arr[i][j].right):
-                field.arr[i + 1][j].left = True
-                field.arr[i + 1][j].cnt += 1
-                returnValue = countOfSellsThatWeCanTake(field, i + 1, j) + 1
-                field.arr[i + 1][j].left = False
-                field.arr[i + 1][j].cnt -= 1
-
-            elif (not field.arr[i][j].up):
-                field.arr[i][j - 1].down = True
-                field.arr[i][j - 1].cnt += 1
-                returnValue = countOfSellsThatWeCanTake(field, i, j - 1) + 1
-                field.arr[i][j - 1].down = False
-                field.arr[i][j - 1].cnt -= 1
-            elif (not field.arr[i][j - 1].down):
-                field.arr[i][j + 1].up = True
-                field.arr[i][j + 1].cnt += 1
-                returnValue = countOfSellsThatWeCanTake(field, i, j + 1) + 1
-                field.arr[i][j + 1].up = False
-                field.arr[i][j + 1].cnt -= 1
-    return returnValue
 class CompPlayer(Player):
     def __init__(self, sign):
         super().__init__(sign)
@@ -114,7 +173,7 @@ class CompPlayer(Player):
                     if(haveFound):
                         break
                     for j in range(n):
-                        if (field.arr[i-1][j].value == 0 and field.arr[i][j].value == 0 and i > 0 and (not field.arr[i - 1][j].right) and field.arr[i - 1][j].cnt < 2 and field.arr[i][j].cnt < 2):
+                        if (field.arr[i - 1][j].value == 0 and field.arr[i][j].value == 0 and i > 0 and (not field.arr[i - 1][j].right) and field.arr[i - 1][j].cnt < 2 and field.arr[i][j].cnt < 2):
                             x = i
                             y = j
                             vertical = True
@@ -131,29 +190,23 @@ class CompPlayer(Player):
                 for i in range(n):
                     for j in range(n):
                         if (field.arr[i][j].cnt == 3):
-                            if (not field.arr[i][j].left):
-                                x = i
-                                y = j
-                                vertical = True
-                            elif (not field.arr[i][j].right):
-                                x = i + 1
-                                y = j
-                                vertical = True
-                            elif (not field.arr[i][j].up):
-                                x = i
-                                y = j
-                                vertical = False
-                            elif (not field.arr[i][j].down):
-                                x = i
-                                y = j + 1
-                                vertical = False
+                            x, y, vertical = findStickThatWeCanTake(field, i, j)
+
         else:
-            if(canTakeSellCounter):
+            if (canTakeSellCounter == 0):
+                x, y, vertical = giveMininum(field)
+            else:
                 for i in range(n):
                     for j in range(n):
-                        print()
-                        #if(countOfSellsThatWeCanTake(field, i, j) > )
+                        if (field.arr[i][j].cnt == 3):
+                            bf = countOfSellsThatWeCanTake(field, i, j)
 
+                            if (bf > 4):
+                                x, y, vertical = findStickThatWeCanTake(field, i, j)
+                            elif (bf == 1 or bf == 2):
+                                x, y, vertical = findStickThatWeCanTake(field, i, j)
+                            else:
+                                x, y, vertical = giveMininum(field)
 
 
 

@@ -22,7 +22,6 @@ class Sell:
         self.value = value
         self.cnt = cnt
 
-
 class Field:
     arr = []
     emptySellCounter = 0
@@ -70,7 +69,6 @@ class Field:
                     c.create_oval(to_display_coord(i) + a // 4,to_display_coord(j) + a // 4, to_display_coord(i) + a * 3 // 4,
                                   to_display_coord(j) + a * 3 // 4, fill='blue')
 
-
     def isFull(self):
 
         return self.emptySellCounter == 0
@@ -85,7 +83,6 @@ class Field:
                 if (self.arr[i][j].value == 2):
                     scoreB += 1
         return scoreA, scoreB
-
 
 class SquareField(Field):
     def __init__(self, n: int):
@@ -113,9 +110,10 @@ class SquareField(Field):
 
     #def draw(self, window, c):
 
-
 class RombField(Field):
     def __init__(self, n: int):
+        if(n % 2 == 0):
+            n -= 1
         super().__init__(n)
         for i in range(n // 2 + 1):
             for j in range(n // 2 - i, n // 2 + i + 1):
@@ -162,7 +160,3 @@ class RombField(Field):
                 if (self.arr[i][j].down):
                     self.arr[i][j].cnt += 1
 
-
-class CustomField(Field):
-    def __init__(self, n: int):
-        super().__init__(n)

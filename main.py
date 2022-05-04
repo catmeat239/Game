@@ -1,4 +1,4 @@
-from field import Field, SquareField, RombField, CustomField
+from field import Field, SquareField, RombField
 from player import Player, HumanPlayer, CompPlayer
 from tkinter import *
 from tkinter import messagebox
@@ -60,26 +60,36 @@ def gameProccess(playerA, playerB, field):
             playerA.hasMoved = not playerB.hasMoved
 
         field.draw(window, c)
-
+    field.draw(window, c)
     scoreA, scoreB = field.calulateScore()
     if scoreA > scoreB:
-        print("A win")
+        messagebox.showinfo("Game over", "first player won")
     elif scoreA < scoreB:
-        print('B win')
+        messagebox.showinfo("Game over", "second player won")
     else:
-        print("Tie")
+        messagebox.showinfo("Game over", "Tie")
 
 n = 1000
 window = Tk()
+window.title("Menu")
 
 def clickPlayVSComputerButton():
     global onMenu, playVSComp
-    onMenu = 0
-    playVSComp = True
+    s = sizeOfFieldEntry.get()
+    if(len(s) < 3 and len(s) > 0 and ord(s[0]) >= ord('0') and ord(s[0]) <= ord('9') and  ord(s[-1]) >= ord('0') and ord(s[-1]) <= ord('9') and int(s) >= 5 and int(s) <= 25):
+            onMenu = 0
+            playVSComp = True
+    else:
+        messagebox.showwarning("change size of the field", "Size of the field must be a number from 5 to 25")
+
 def clickPlayVSHumanButton():
     global onMenu, playVSComp
-    onMenu = 0
-    playVSComp = False
+    s = sizeOfFieldEntry.get()
+    if (len(s) < 3 and len(s) > 0 and ord(s[0]) >= ord('0') and ord(s[0]) <= ord('9') and  ord(s[-1]) >= ord('0') and ord(s[-1]) <= ord('9') and int(s) >= 5 and int(s) <= 25):
+            onMenu = 0
+            playVSComp = False
+    else:
+        messagebox.showwarning("change size of the field", "Size of the field must be a number from 5 to 25")
 
 def clickRulesButton():
     messagebox.showinfo("Правила:", "    Игровое поле может представлять собой любую замкнутую область на клетчатой бумаге.\n"
@@ -88,33 +98,51 @@ def clickRulesButton():
                                  "игрок обязан поставить в закрытых им квадратах свой знак(крестик или нолик) и сделать еще один ход (поставить еще одну черту)\n"
                                  "    Игроки ходят пока все поле не будет заполнено. В конце игры подсчитывается количество знаков каждого игрока, выигрывает тот, чьих знаков больше.")
 
-playVSComputerButton = Button(text="playVScomputer", command=clickPlayVSComputerButton)
+
+playVSComp = False
+onMenu = 1
+
+fieldType = IntVar()
+fieldType.set(1)
+
+typeOfTheFieldlabel = Label(text = "Choose type of the field:", padx= 100, pady = 10)
+typeOfTheFieldlabel.pack()
+
+
+rombFieldButton = Radiobutton(text="romb", value=1, variable=fieldType, padx=100, pady=10)
+rombFieldButton.pack()
+
+squareFieldButton = Radiobutton(text="square", value=2, variable=fieldType, padx=100, pady=10)
+squareFieldButton.pack()
+
+
+
+sizeOfTheFieldlabel = Label(text = "Enter size of the field")
+sizeOfTheFieldlabel.pack()
+sizeOfFieldEntry = Entry()
+sizeOfFieldEntry.pack()
+
+
+playVSComputerButton = Button(text="play VS the bot", command=clickPlayVSComputerButton)
 playVSComputerButton.pack()
-playVSHumanButton = Button(text="playVShuman", command=clickPlayVSHumanButton)
+playVSHumanButton = Button(text="play VS human", command=clickPlayVSHumanButton)
 playVSHumanButton.pack()
 rulesButton = Button(text="rules", command=clickRulesButton)
 rulesButton.pack()
 
-fieldType = IntVar()
-
-
-squareFieldButton = Radiobutton(text="square", value=1, variable=fieldType, padx=15, pady=10)
-squareFieldButton.pack()
-
-rombFieldButton = Radiobutton(text="romb", value=2, variable=fieldType, padx=15, pady=10)
-rombFieldButton.pack()
-
-
-
-
-onMenu = 1
-while(onMenu != 0):
+while (onMenu != 0):
     window.update()
+k = 5
+k = int(sizeOfFieldEntry.get())
+
 squareFieldButton.destroy()
 rombFieldButton.destroy()
 rulesButton.destroy()
 playVSComputerButton.destroy()
 playVSHumanButton.destroy()
+sizeOfFieldEntry.destroy()
+sizeOfTheFieldlabel.destroy()
+typeOfTheFieldlabel.destroy()
 
 playerA = HumanPlayer(1)
 if(playVSComp):
@@ -122,17 +150,16 @@ if(playVSComp):
 else:
     playerB = HumanPlayer(2)
 
-k = 5
+
 a = 40  # side of a Sell
 n = (k + 2) * a
 window.option_clear()
 c = Canvas(window, width=n, height=n, bg='white')
 c.pack()
-if (fieldType.get() == 0):
-    field = CustomField(k)
-elif (fieldType.get() == 1):
+
+if (fieldType.get() == 2):
     field = SquareField(k)
-elif (fieldType.get() == 2):
+elif (fieldType.get() == 1):
     field = RombField(k)
 c.create_rectangle(0, 0, n, n)
 field.draw(window, c)
