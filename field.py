@@ -161,3 +161,8 @@ class RombField(Field):
                     self.arr[i][j].cnt += 1
                 if (self.arr[i][j].down):
                     self.arr[i][j].cnt += 1
+
+
+class CustomField(Field):
+    def __init__(self, n: int):
+        super().__init__(n)
